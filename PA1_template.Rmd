@@ -11,13 +11,13 @@ opts_chunk$set(echo=TRUE, cache=TRUE, results="asis")
 ## Loading and preprocessing the data
 
 ### 1. Load the data
-```{r}
+```{r load}
 setwd("C:/Users/Owner/Documents/R/data")
 activity = read.csv("./activity.csv", header=T)
 ```
 
 ### 2. Process/transform data
-```{r}
+```{r processtransform}
 activity$date <- as.Date(activity$date, format="%Y-%m-%d")
 activity$interval <- as.numeric(activity$interval)
 totalsteps <- aggregate(steps~date, data=activity, sum, na.rm=TRUE)
@@ -27,7 +27,7 @@ totalsteps <- aggregate(steps~date, data=activity, sum, na.rm=TRUE)
 
 ### 1. Make a histogram of the total number of steps taken each day
 
-```{r}
+```{r histogram1}
 hist(totalsteps$steps, main="Steps Taken Each Day", xlab="Steps")
 ```
 
@@ -53,14 +53,14 @@ The median is `r mediansteps`.
 
 ### 1. Make a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y axis)
 
-```{r}
+```{r timeseries}
 intervalsteps <- aggregate(steps~interval, data=activity, mean, na.rm=TRUE)
 plot(steps~interval, data=intervalsteps, type="l")
 ```
 
 ### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+```{r maxstepinterval}
 intervalindex<-intervalsteps[which.max(intervalsteps$steps),]$interval
 ```
 
@@ -70,7 +70,7 @@ The 5-minute interval with index `r intervalindex` has the maximum number of ste
 
 ### 1. Calculate and report the total number of missing values in the dataset.
 
-```{r}
+```{r missingrows}
 missingrows <- sum(is.na(activity$steps))
 ```
 
@@ -79,7 +79,7 @@ missingrows <- sum(is.na(activity$steps))
 ### 2. Devise a strategy for filling in all the missing values in the dataset. 
 Missing values will be filled in with the mean for that 5-minute interval. The following function computes the mean number of steps for a particular 5-minute interval.
 
-```{r}
+```{r impute}
 meanforinterval <- function(interval) {
         intervalsteps[intervalsteps$interval==interval,]$steps
         }
@@ -87,7 +87,7 @@ meanforinterval <- function(interval) {
 
 ### 3. Create a new dataset that is equal to the original dataset, but with the missing data filled in.
 
-```{r cache=TRUE}
+```{r newdata}
 activity_noNA <- activity
 count = 0
 for (i in 1:nrow(activity_noNA)) {
@@ -100,7 +100,7 @@ for (i in 1:nrow(activity_noNA)) {
 
 ### 4. Make a histogram of the total number of steps taken each day. Calculate and report the mean and median total number of steps. Do these values differ from those in the first part of the assignment? What is the impact of imputing missing data?
 
-```{r cache=TRUE}
+```{r histogram2withmeanmedian}
 totalsteps2 <- aggregate(steps~date, data=activity_noNA, sum)
 hist(totalsteps2$steps, main="Steps Taken Each Day (Imputed NA)", xlab="Steps")
 meansteps2 <- mean(totalsteps2$steps)
@@ -117,14 +117,14 @@ The median has changed slightly.
 
 ### 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend"
 
-```{r}
+```{r factor}
 activity_noNA$day = ifelse(as.POSIXlt(as.Date(activity_noNA$date))$wday%%6==0, "weekend", "weekday")
 activity_noNA$day=factor(activity_noNA$day, levels=c("weekday", "weekend"))
 ```
 
 ### 2. Make a panel plot (x-axis as 5-minute interval and y-axis as the average number of steps taken, averaged across all week days or weekend days)
 
-```{r}
+```{r panelplot}
 intervalsteps2 = aggregate(steps~interval+day, activity_noNA, mean)
 library(lattice)
 xyplot(steps~interval|factor(day), data=intervalsteps2, aspect=1/2, type="l")

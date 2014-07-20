@@ -35,7 +35,7 @@ totalsteps <- aggregate(steps~date, data=activity, sum, na.rm=TRUE)
 hist(totalsteps$steps, main="Steps Taken Each Day", xlab="Steps")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
+![plot of chunk histogram1](figure/histogram1.png) 
 
 ### 2. Calculate and report the mean and median total number of steps taken per day
 
@@ -67,7 +67,7 @@ intervalsteps <- aggregate(steps~interval, data=activity, mean, na.rm=TRUE)
 plot(steps~interval, data=intervalsteps, type="l")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+![plot of chunk timeseries](figure/timeseries.png) 
 
 ### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
@@ -121,7 +121,7 @@ totalsteps2 <- aggregate(steps~date, data=activity_noNA, sum)
 hist(totalsteps2$steps, main="Steps Taken Each Day (Imputed NA)", xlab="Steps")
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9.png) 
+![plot of chunk histogram2withmeanmedian](figure/histogram2withmeanmedian.png) 
 
 ```r
 meansteps2 <- mean(totalsteps2$steps)
@@ -150,15 +150,8 @@ activity_noNA$day=factor(activity_noNA$day, levels=c("weekday", "weekend"))
 ```r
 intervalsteps2 = aggregate(steps~interval+day, activity_noNA, mean)
 library(lattice)
-```
-
-```
-## Warning: package 'lattice' was built under R version 3.0.3
-```
-
-```r
 xyplot(steps~interval|factor(day), data=intervalsteps2, aspect=1/2, type="l")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 
+![plot of chunk panelplot](figure/panelplot.png) 
 
